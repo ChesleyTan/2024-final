@@ -48,24 +48,42 @@ int main() {
 }
 
 void handle_add_cmd() {
-    // TODO validate inputs
     string payer, debtor, description;
     double amount;
-    cout << "Payer: ";
-    cin >> payer;
-    cout << "Debtor: ";
-    cin >> debtor;
-    cout << "Amount: ";
-    cin >> amount;
+    bool bad_input = false;
+    do {
+        if (bad_input) {
+            cout << "Invalid input. Please try again." << endl;
+        }
+        cout << "Payer: ";
+        getline(cin, payer);
+        bad_input = payer == "";
+    } while (bad_input);
+    do {
+        if (bad_input) {
+            cout << "Invalid input. Please try again." << endl;
+        }
+        cout << "Debtor: ";
+        getline(cin, debtor);
+        bad_input = debtor == "" || debtor == payer;
+    } while (bad_input);
+    do {
+        if (bad_input) {
+            cout << "Invalid input. Please try again." << endl;
+        }
+        cout << "Amount: ";
+        cin >> amount;
+        bad_input = !cin.good();
+        flush_cin();
+    } while (bad_input);
     cout << "Description: ";
-    cin >> description;
+    getline(cin, description);
 #ifdef DEBUG
     cout << "Payer: " << payer << endl;
     cout << "Debtor: " << debtor << endl;
     cout << "Amount: " << std::fixed << std::setprecision(2) << amount << endl;
     cout << "Description: " << description << endl;
 #endif
-    flush_cin();
 }
 
 void trim_trailing_whitespace(string &s) {
