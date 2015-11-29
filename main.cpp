@@ -42,6 +42,12 @@ int main() {
 #endif
             handle_summary_cmd();
         }
+        else if (line == "analytics") {
+#ifdef DEBUG
+            print_debug("Got analytics command");
+#endif
+            handle_analytics_cmd();
+        }
         else if (line == "quit") {
 #ifdef DEBUG
             print_debug("Got quit command");
@@ -63,6 +69,8 @@ void handle_help_cmd() {
     cout << "\t- List all transactions" << endl;
     cout << "summary" << endl;
     cout << "\t- Print a summary of debts" << endl;
+    cout << "analytics" << endl;
+    cout << "\t- Print analytics of debts" << endl;
     cout << "quit" << endl;
     cout << "\t- Quit the program" << endl;
     cout << "help" << endl;
@@ -124,6 +132,10 @@ void handle_log_cmd() {
 
 void handle_summary_cmd() {
     db.print_summary_log();
+}
+
+void handle_analytics_cmd() {
+    db.print_analytics();
 }
 
 void trim_trailing_whitespace(string &s) {

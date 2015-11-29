@@ -14,6 +14,7 @@ void handle_help_cmd();
 void handle_add_cmd();
 void handle_log_cmd();
 void handle_summary_cmd();
+void handle_analytics_cmd();
 void flush_cin();
 
 #endif /* MAIN_H_ */

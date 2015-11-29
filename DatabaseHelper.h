@@ -12,15 +12,15 @@
 
 static const char *DB_NAME = "transactions.db";
 static const char *CREATE_TRANSACTIONS_QUERY =
-                                  "CREATE TABLE IF NOT EXISTS Transactions ("\
-                                  "Payer TEXT NOT NULL,"\
-                                  "Debtor TEXT NOT NULL,"\
-                                  "Amount REAL,"\
+                                  "CREATE TABLE IF NOT EXISTS Transactions ("
+                                  "Payer TEXT NOT NULL,"
+                                  "Debtor TEXT NOT NULL,"
+                                  "Amount REAL,"
                                   "Description TEXT)";
 static const char *CREATE_DEBTS_QUERY =
-                                  "CREATE TABLE IF NOT EXISTS Debts ("\
-                                  "Payer TEXT NOT NULL,"\
-                                  "Debtor TEXT NOT NULL,"\
+                                  "CREATE TABLE IF NOT EXISTS Debts ("
+                                  "Payer TEXT NOT NULL,"
+                                  "Debtor TEXT NOT NULL,"
                                   "Amount REAL)";
 
 class DatabaseHelper {
@@ -34,14 +34,19 @@ class DatabaseHelper {
                 double amount);
         void print_transaction_log();
         void print_summary_log();
+        void print_analytics();
     private:
         sqlite3 *conn;
         void clear_zero_debts();
 };
 
-static int print_transaction_log_callback(void *data, int argc, char **argv,
+int print_transaction_log_callback(void *data, int argc, char **argv,
         char **colNames);
-static int print_summary_log_callback(void *data, int argc, char **argv,
+int print_summary_log_callback(void *data, int argc, char **argv,
+        char **colNames);
+int print_analytics_largest_debt_callback(void *data, int argc, char **argv,
+        char **colNames);
+int print_analytics_smallest_debt_callback(void *data, int argc, char **argv,
         char **colNames);
 
 #endif /* DATABASEHELPER_H_ */

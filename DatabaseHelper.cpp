@@ -5,7 +5,8 @@ static int num_rows;
 
 DatabaseHelper::DatabaseHelper() {
     if (sqlite3_open(DB_NAME, &conn)) {
-        cerr << "Could not open database connection: " << sqlite3_errmsg(conn) << endl;
+        cerr << "Could not open database connection: " << sqlite3_errmsg(conn)
+                << endl;
     }
     else {
 #ifdef DEBUG
@@ -55,7 +56,7 @@ void DatabaseHelper::add_transaction(std::string payer, std::string debtor,
     int payer_strlen = strlen(payer_str);
     int ret;
     sqlite3_stmt *stmt;
-    const char *query = "INSERT INTO Transactions (Payer, Debtor, Amount,"\
+    const char *query = "INSERT INTO Transactions (Payer, Debtor, Amount,"
                         "Description) VALUES (?, ?, ?, ?)";
     ret = sqlite3_prepare(conn, query, strlen(query), &stmt, NULL);
     if(ret == SQLITE_OK) {
@@ -139,7 +140,7 @@ void DatabaseHelper::add_debt(std::string payer, std::string debtor,
                     << setprecision(2) << existing_debt;
             print_debug(out.str());
 #endif
-            query = "UPDATE Debts SET Amount = ? WHERE Payer = ? AND "\
+            query = "UPDATE Debts SET Amount = ? WHERE Payer = ? AND "
                     "Debtor = ?";
             ret = sqlite3_prepare(conn, query, strlen(query), &stmt, NULL);
             if (ret == SQLITE_OK) {
@@ -199,7 +200,7 @@ void DatabaseHelper::add_debt(std::string payer, std::string debtor,
                     cerr << "Error preparing query for adding transaction"
                             << endl;
                 }
-                query = "INSERT INTO Debts (Payer, Debtor, Amount) VALUES "\
+                query = "INSERT INTO Debts (Payer, Debtor, Amount) VALUES "
                         "(?, ?, ?)";
                 ret = sqlite3_prepare(conn, query, strlen(query), &stmt, NULL);
                 if (ret == SQLITE_OK) {
@@ -222,7 +223,7 @@ void DatabaseHelper::add_debt(std::string payer, std::string debtor,
 #ifdef DEBUG
             print_debug(payer + " and " + debtor + " have no prior debts");
 #endif
-            query = "INSERT INTO Debts (Payer, Debtor, Amount) VALUES "\
+            query = "INSERT INTO Debts (Payer, Debtor, Amount) VALUES "
                     "(?, ?, ?)";
             ret = sqlite3_prepare(conn, query, strlen(query), &stmt, NULL);
             if (ret == SQLITE_OK) {
@@ -253,7 +254,7 @@ void DatabaseHelper::clear_zero_debts() {
     }
 }
 
-static int print_transaction_log_callback(void *data, int argc, char **argv,
+int print_transaction_log_callback(void *data, int argc, char **argv,
         char **colNames) {
     double amount = atof(argv[2]);
     cout << argv[1] << " owes " << argv[0] << " $" << fixed << setprecision(2)
@@ -263,7 +264,7 @@ static int print_transaction_log_callback(void *data, int argc, char **argv,
 
 void DatabaseHelper::print_transaction_log() {
     char *err_msg;
-    const char *query = "SELECT Payer, Debtor, Amount, Description "\
+    const char *query = "SELECT Payer, Debtor, Amount, Description "
                         "FROM Transactions";
     int ret = sqlite3_exec(conn, query, print_transaction_log_callback, NULL,
             &err_msg);
@@ -273,7 +274,7 @@ void DatabaseHelper::print_transaction_log() {
     }
 }
 
-static int print_summary_log_callback(void *data, int argc, char **argv,
+int print_summary_log_callback(void *data, int argc, char **argv,
         char **colNames) {
     ++num_rows;
     double amount = atof(argv[2]);
@@ -284,7 +285,7 @@ static int print_summary_log_callback(void *data, int argc, char **argv,
 
 void DatabaseHelper::print_summary_log() {
     char *err_msg;
-    const char *query = "SELECT Payer, Debtor, Amount "\
+    const char *query = "SELECT Payer, Debtor, Amount "
                         "FROM Debts";
     num_rows = 0;
     int ret = sqlite3_exec(conn, query, print_summary_log_callback, NULL,
@@ -295,5 +296,51 @@ void DatabaseHelper::print_summary_log() {
     }
     if (num_rows == 0) {
         cout << "There are no debts!" << endl;
+    }
+}
+
+int print_analytics_largest_debt_callback(void *data, int argc, char **argv,
+        char **colNames) {
+    ++num_rows;
+    double amount = atof(argv[1]);
+    cout << argv[0] << " has the largest debt of $" << fixed << setprecision(2)
+            << amount << endl;
+    return 0;
+}
+
+int print_analytics_smallest_debt_callback(void *data, int argc, char **argv,
+        char **colNames) {
+    ++num_rows;
+    double amount = atof(argv[1]);
+    cout << argv[0] << " has the smallest debt of $" << fixed << setprecision(2)
+            << amount << endl;
+    return 0;
+}
+
+void DatabaseHelper::print_analytics() {
+    char *err_msg;
+    const char *query = "SELECT Debtor, SUM(Amount) "
+                        "FROM Debts GROUP BY Debtor "
+                        "ORDER BY Amount DESC LIMIT 1";
+    num_rows = 0;
+    int ret = sqlite3_exec(conn, query, print_analytics_largest_debt_callback,
+            NULL, &err_msg);
+    if (ret != SQLITE_OK) {
+        cerr << "SQL Error: " << err_msg << endl;
+        sqlite3_free(err_msg);
+    }
+    if (num_rows == 0) {
+        cout << "There are no debts!" << endl;
+        return;
+    }
+    query = "SELECT Debtor, SUM(Amount) "
+            "FROM Debts GROUP BY Debtor "
+            "ORDER BY Amount LIMIT 1";
+    num_rows = 0;
+    ret = sqlite3_exec(conn, query, print_analytics_smallest_debt_callback,
+            NULL, &err_msg);
+    if (ret != SQLITE_OK) {
+        cerr << "SQL Error: " << err_msg << endl;
+        sqlite3_free(err_msg);
     }
 }
