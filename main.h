@@ -6,6 +6,8 @@
 #include <iomanip>
 #include <limits>
 #include <sstream>
+#include "DatabaseHelper.h"
+#include "util.h"
 
 void trim_trailing_whitespace(std::string &s);
 void handle_help_cmd();

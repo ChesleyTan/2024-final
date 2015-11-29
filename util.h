@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-void print_debug(std::string s) {
-    std::cout << "[DEBUG]: " << s << std::endl;
+inline void print_debug(std::string s) {
+    std::cout << "\e[1;38;5;220m[DEBUG]: " << s << "\e[0m" << std::endl;
 }
 #endif /* UTIL_H_ */

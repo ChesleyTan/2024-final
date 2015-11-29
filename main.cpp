@@ -1,13 +1,13 @@
 #include "main.h"
-#include "util.h"
 using namespace std;
 
 const char *PROMPT = ">> ";
 int main() {
     string line;
     bool is_eof = false;
+    DatabaseHelper db;
     cout << "== Expense/Debt Tracker by Chesley Tan, Qingjun Wang, and Shaoke Xu ==" << endl;
-    cout << "Enter `help` for a list of commands" << endl;
+    cout << "Enter `help` for a list of commands, `quit` to exit" << endl;
     while (!is_eof) {
         cout << PROMPT;
         getline(cin, line);
@@ -40,6 +40,12 @@ int main() {
             print_debug("Got summary command");
 #endif
         }
+        else if (line == "quit") {
+#ifdef DEBUG
+            print_debug("Got quit command");
+#endif
+            return 0;
+        }
         else {
             cerr << "Unrecognized command: " << line << endl;
         }
@@ -55,6 +61,10 @@ void handle_help_cmd() {
     cout << "\t- List all transactions" << endl;
     cout << "summary" << endl;
     cout << "\t- Print a summary of debts" << endl;
+    cout << "quit" << endl;
+    cout << "\t- Quit the program" << endl;
+    cout << "help" << endl;
+    cout << "\t- Show this help information" << endl;
 }
 
 void handle_add_cmd() {
