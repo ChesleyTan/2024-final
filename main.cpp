@@ -103,8 +103,8 @@ void handle_add_cmd() {
         flush_cin();
     } while (bad_input);
 #ifdef DEBUG
-    std::ostringstream out;
-    out << "Amount: " << std::fixed << std::setprecision(2) << amount;
+    ostringstream out;
+    out << "Amount: " << fixed << setprecision(2) << amount;
     print_debug(out.str());
 #endif
     cout << "Description: ";

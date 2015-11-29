@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <sstream>
+#include <iomanip>
 #include <sqlite3.h>
 #include "util.h"
 
@@ -27,6 +29,8 @@ class DatabaseHelper {
         void initialize_db();
         void add_transaction(std::string payer, std::string debtor,
                 double amount, std::string description);
+        void add_debt(std::string payer, std::string debtor,
+                double amount);
     private:
         sqlite3 *conn;
 };
