@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstdlib>
 #include <cstring>
 #include <sstream>
 #include <iomanip>
@@ -31,9 +32,16 @@ class DatabaseHelper {
                 double amount, std::string description);
         void add_debt(std::string payer, std::string debtor,
                 double amount);
+        void print_transaction_log();
+        void print_summary_log();
     private:
         sqlite3 *conn;
         void clear_zero_debts();
 };
+
+static int print_transaction_log_callback(void *data, int argc, char **argv,
+        char **colNames);
+static int print_summary_log_callback(void *data, int argc, char **argv,
+        char **colNames);
 
 #endif /* DATABASEHELPER_H_ */

@@ -1,6 +1,8 @@
 #include "DatabaseHelper.h"
 using namespace std;
 
+static int num_rows;
+
 DatabaseHelper::DatabaseHelper() {
     if (sqlite3_open(DB_NAME, &conn)) {
         cerr << "Could not open database connection: " << sqlite3_errmsg(conn) << endl;
@@ -53,8 +55,8 @@ void DatabaseHelper::add_transaction(std::string payer, std::string debtor,
     int payer_strlen = strlen(payer_str);
     int ret;
     sqlite3_stmt *stmt;
-    char *query = "INSERT INTO Transactions (Payer, Debtor, Amount,"\
-                  "Description) VALUES (?, ?, ?, ?)";
+    const char *query = "INSERT INTO Transactions (Payer, Debtor, Amount,"\
+                        "Description) VALUES (?, ?, ?, ?)";
     ret = sqlite3_prepare(conn, query, strlen(query), &stmt, NULL);
     if(ret == SQLITE_OK) {
         // bind query arguments
@@ -242,11 +244,56 @@ void DatabaseHelper::add_debt(std::string payer, std::string debtor,
 }
 
 void DatabaseHelper::clear_zero_debts() {
-    char *query = "DELETE FROM Debts WHERE Amount = 0";
+    const char *query = "DELETE FROM Debts WHERE Amount = 0";
     char *err_msg;
     int ret = sqlite3_exec(conn, query, NULL, NULL, &err_msg);
     if (ret != SQLITE_OK) {
         cerr << "SQL Error: " << err_msg << endl;
         sqlite3_free(err_msg);
+    }
+}
+
+static int print_transaction_log_callback(void *data, int argc, char **argv,
+        char **colNames) {
+    double amount = atof(argv[2]);
+    cout << argv[1] << " owes " << argv[0] << " $" << fixed << setprecision(2)
+            << amount << " (" << argv[3] << ")" << endl;
+    return 0;
+}
+
+void DatabaseHelper::print_transaction_log() {
+    char *err_msg;
+    const char *query = "SELECT Payer, Debtor, Amount, Description "\
+                        "FROM Transactions";
+    int ret = sqlite3_exec(conn, query, print_transaction_log_callback, NULL,
+            &err_msg);
+    if (ret != SQLITE_OK) {
+        cerr << "SQL Error: " << err_msg << endl;
+        sqlite3_free(err_msg);
+    }
+}
+
+static int print_summary_log_callback(void *data, int argc, char **argv,
+        char **colNames) {
+    ++num_rows;
+    double amount = atof(argv[2]);
+    cout << argv[1] << " owes " << argv[0] << " $" << fixed << setprecision(2)
+            << amount << endl;
+    return 0;
+}
+
+void DatabaseHelper::print_summary_log() {
+    char *err_msg;
+    const char *query = "SELECT Payer, Debtor, Amount "\
+                        "FROM Debts";
+    num_rows = 0;
+    int ret = sqlite3_exec(conn, query, print_summary_log_callback, NULL,
+            &err_msg);
+    if (ret != SQLITE_OK) {
+        cerr << "SQL Error: " << err_msg << endl;
+        sqlite3_free(err_msg);
+    }
+    if (num_rows == 0) {
+        cout << "There are no debts!" << endl;
     }
 }

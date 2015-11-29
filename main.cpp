@@ -2,10 +2,10 @@
 using namespace std;
 
 const char *PROMPT = ">> ";
+DatabaseHelper db;
 int main() {
     string line;
     bool is_eof = false;
-    DatabaseHelper db;
     cout << "== Expense/Debt Tracker by Chesley Tan, Qingjun Wang, and Shaoke Xu ==" << endl;
     cout << "Enter `help` for a list of commands, `quit` to exit" << endl;
     while (!is_eof) {
@@ -28,17 +28,19 @@ int main() {
 #ifdef DEBUG
             print_debug("Got add command");
 #endif
-            handle_add_cmd(db);
+            handle_add_cmd();
         }
         else if (line == "log") {
 #ifdef DEBUG
             print_debug("Got log command");
 #endif
+            handle_log_cmd();
         }
         else if (line == "summary") {
 #ifdef DEBUG
             print_debug("Got summary command");
 #endif
+            handle_summary_cmd();
         }
         else if (line == "quit") {
 #ifdef DEBUG
@@ -67,7 +69,7 @@ void handle_help_cmd() {
     cout << "\t- Show this help information" << endl;
 }
 
-void handle_add_cmd(DatabaseHelper &db) {
+void handle_add_cmd() {
     string payer, debtor, description;
     double amount;
     bool bad_input = false;
@@ -114,6 +116,14 @@ void handle_add_cmd(DatabaseHelper &db) {
 #endif
     db.add_transaction(payer, debtor, amount, description);
     db.add_debt(payer, debtor, amount);
+}
+
+void handle_log_cmd() {
+    db.print_transaction_log();
+}
+
+void handle_summary_cmd() {
+    db.print_summary_log();
 }
 
 void trim_trailing_whitespace(string &s) {
