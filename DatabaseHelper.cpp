@@ -23,8 +23,8 @@ DatabaseHelper::~DatabaseHelper() {
 void DatabaseHelper::initialize_db() {
     int ret;
     char *err_msg;
-    ret = sqlite3_exec(conn, CREATE_TRANSACTIONS_QUERY, 0, 0, &err_msg);
-    if (ret) {
+    ret = sqlite3_exec(conn, CREATE_TRANSACTIONS_QUERY, NULL, NULL, &err_msg);
+    if (ret != SQLITE_OK) {
         cerr << "SQL Error: " << err_msg << endl;
         sqlite3_free(err_msg);
     }
@@ -33,8 +33,8 @@ void DatabaseHelper::initialize_db() {
         print_debug("Successfully created Transactions table.");
 #endif
     }
-    ret = sqlite3_exec(conn, CREATE_DEBTS_QUERY, 0, 0, &err_msg);
-    if (ret) {
+    ret = sqlite3_exec(conn, CREATE_DEBTS_QUERY, NULL, NULL, &err_msg);
+    if (ret != SQLITE_OK) {
         cerr << "SQL Error: " << err_msg << endl;
         sqlite3_free(err_msg);
     }
@@ -237,5 +237,16 @@ void DatabaseHelper::add_debt(std::string payer, std::string debtor,
                 cerr << "Error preparing query for adding transaction" << endl;
             }
             break;
+    }
+    clear_zero_debts();
+}
+
+void DatabaseHelper::clear_zero_debts() {
+    char *query = "DELETE FROM Debts WHERE Amount = 0";
+    char *err_msg;
+    int ret = sqlite3_exec(conn, query, NULL, NULL, &err_msg);
+    if (ret != SQLITE_OK) {
+        cerr << "SQL Error: " << err_msg << endl;
+        sqlite3_free(err_msg);
     }
 }

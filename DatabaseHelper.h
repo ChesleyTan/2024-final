@@ -33,6 +33,7 @@ class DatabaseHelper {
                 double amount);
     private:
         sqlite3 *conn;
+        void clear_zero_debts();
 };
 
 #endif /* DATABASEHELPER_H_ */
