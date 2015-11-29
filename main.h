@@ -11,7 +11,7 @@
 
 void trim_trailing_whitespace(std::string &s);
 void handle_help_cmd();
-void handle_add_cmd();
+void handle_add_cmd(DatabaseHelper &db);
 void flush_cin();
 
 #endif /* MAIN_H_ */

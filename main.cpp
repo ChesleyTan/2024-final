@@ -28,7 +28,7 @@ int main() {
 #ifdef DEBUG
             print_debug("Got add command");
 #endif
-            handle_add_cmd();
+            handle_add_cmd(db);
         }
         else if (line == "log") {
 #ifdef DEBUG
@@ -67,7 +67,7 @@ void handle_help_cmd() {
     cout << "\t- Show this help information" << endl;
 }
 
-void handle_add_cmd() {
+void handle_add_cmd(DatabaseHelper &db) {
     string payer, debtor, description;
     double amount;
     bool bad_input = false;
@@ -112,6 +112,8 @@ void handle_add_cmd() {
 #ifdef DEBUG
     print_debug("Description: " + description);
 #endif
+    db.add_transaction(payer, debtor, amount, description);
+    db.add_debt(payer, debtor, amount);
 }
 
 void trim_trailing_whitespace(string &s) {

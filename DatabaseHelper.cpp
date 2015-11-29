@@ -133,7 +133,7 @@ void DatabaseHelper::add_debt(std::string payer, std::string debtor,
     switch (orientation_case) {
         case 1:
 #ifdef DEBUG
-            out << debtor << " owes " << payer << " " << fixed
+            out << debtor << " already owes " << payer << " " << fixed
                     << setprecision(2) << existing_debt;
             print_debug(out.str());
 #endif
@@ -156,7 +156,7 @@ void DatabaseHelper::add_debt(std::string payer, std::string debtor,
             break;
         case 2:
 #ifdef DEBUG
-            out << payer << " owes " << debtor << " " << fixed
+            out << payer << " already owes " << debtor << " " << fixed
                     << setprecision(2) << existing_debt;
             print_debug(out.str());
 #endif
