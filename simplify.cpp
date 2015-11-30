@@ -104,26 +104,3 @@ void load_debts(DatabaseHelper &db) {
         sqlite3_free(err_msg);
     }
 }
-/*
-int main(int argc, const char * argv[]) {
-    // read data
-
-    cout << " ------ test case from user ------ " << endl;
-    simplify("A", "B", 5.0);
-    simplify("B", "C", 10.0);
-    simplify("C", "A", 3.0);
-    simplify("C", "D", 8.0);
-    simplify("C", "B", 2.0);
-    simplify("E", "A", 5.0);
-    simplify("B", "E", 2.0);
-    simplify("A", "E", 1.0);
-
-    for (auto& x : debtor_map) {
-        cout << x.first << ", " << x.second << endl;
-    }
-    cout << " ------ " << endl;
-    assign();
-
-    return 0;
-}
-*/
