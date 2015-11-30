@@ -26,7 +26,7 @@ bool sort_by(const pair<string, double> &a, const pair<string, double> &b) {
 }
 
 // distribute the debts between debtors
-void assign() {
+void assign(DatabaseHelper &db) {
     // sort map by value: make use of vector
     vector<pair<string, double>> debt_vector;
 
@@ -64,21 +64,20 @@ void assign() {
         if (val1 < 0 && val2 > 0) {
             if (-val1 > val2) {
                 new_debt = val2;
-                data = new Node(debt_vector[head_ptr].first,
-                        debt_vector[tail_ptr].first, new_debt);
+                data = new Node(debt_vector[tail_ptr].first,
+                        debt_vector[head_ptr].first, new_debt);
                 tail_ptr--;
                 debt_vector[head_ptr].second += val2;
             }
             else {
                 new_debt = -val1;
-                data = new Node(debt_vector[head_ptr].first,
-                        debt_vector[tail_ptr].first, new_debt);
+                data = new Node(debt_vector[tail_ptr].first,
+                        debt_vector[head_ptr].first, new_debt);
                 head_ptr++;
                 debt_vector[tail_ptr].second += val1;
             }
-            // TODO: put data to the SQL
-            cout << data->getPayerName() << " owes " << data->getDebtorName()
-                    << " $" << data->getVal() << endl;
+            db.add_debt(data->getPayerName(), data->getDebtorName(),
+                    data->getVal());
             delete data;
         }
         else { // no more debts need to be resolved
@@ -87,10 +86,27 @@ void assign() {
     }
 }
 
+int load_debts_callback(void *data, int argc, char **argv,
+        char **colNames) {
+    double amount = atof(argv[2]);
+    simplify(argv[0], argv[1], amount);
+    return 0;
+}
+
+void load_debts(DatabaseHelper &db) {
+    char *err_msg;
+    const char *query = "SELECT Payer, Debtor, Amount "
+                        "FROM Debts";
+    int ret = sqlite3_exec(db.get_conn(), query, load_debts_callback, NULL,
+            &err_msg);
+    if (ret != SQLITE_OK) {
+        cerr << "SQL Error: " << err_msg << endl;
+        sqlite3_free(err_msg);
+    }
+}
 /*
 int main(int argc, const char * argv[]) {
-    // read data from the table
-    // TODO
+    // read data
 
     cout << " ------ test case from user ------ " << endl;
     simplify("A", "B", 5.0);

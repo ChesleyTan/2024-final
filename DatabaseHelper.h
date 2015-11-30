@@ -36,6 +36,7 @@ class DatabaseHelper {
         void print_summary_log();
         void print_analytics();
         void clear_debts();
+        sqlite3 *get_conn();
     private:
         sqlite3 *conn;
         void clear_zero_debts();

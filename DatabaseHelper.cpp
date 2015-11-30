@@ -354,3 +354,7 @@ void DatabaseHelper::clear_debts() {
         sqlite3_free(err_msg);
     }
 }
+
+sqlite3 *DatabaseHelper::get_conn() {
+    return conn;
+}

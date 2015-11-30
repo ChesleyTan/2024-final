@@ -131,6 +131,9 @@ void handle_log_cmd() {
 }
 
 void handle_summary_cmd() {
+    load_debts(db);
+    db.clear_debts();
+    assign(db);
     db.print_summary_log();
 }
 
