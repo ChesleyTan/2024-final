@@ -348,8 +348,7 @@ void DatabaseHelper::print_analytics() {
 void DatabaseHelper::clear_debts() {
     char *err_msg;
     const char *query = "DELETE FROM Debts";
-    int ret = sqlite3_exec(conn, query, print_summary_log_callback, NULL,
-            &err_msg);
+    int ret = sqlite3_exec(conn, query, NULL, NULL, &err_msg);
     if (ret != SQLITE_OK) {
         cerr << "SQL Error: " << err_msg << endl;
         sqlite3_free(err_msg);
