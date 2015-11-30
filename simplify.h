@@ -6,9 +6,11 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <sstream>
 
 #include "DatabaseHelper.h"
 #include "Node.h"
+#include "util.h"
 
 void simplify(string payer, string debtor, double val);
 bool sort_by(const std::pair<string, double> &a,

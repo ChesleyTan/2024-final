@@ -68,7 +68,7 @@ void handle_help_cmd() {
     cout << "list" << endl;
     cout << "\t- List all transactions" << endl;
     cout << "summary" << endl;
-    cout << "\t- Print a summary of debts" << endl;
+    cout << "\t- Print a simplified summary of debts" << endl;
     cout << "analytics" << endl;
     cout << "\t- Print analytics of debts" << endl;
     cout << "quit" << endl;

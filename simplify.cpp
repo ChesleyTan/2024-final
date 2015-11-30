@@ -7,17 +7,17 @@ std::unordered_map<string, double> debtor_map;
 // add debt to debtor_map
 void simplify(string payer, string debtor, double val) {
     if (debtor_map.find(payer) != debtor_map.end()) {
-        debtor_map.at(payer) -= val;
+        debtor_map.at(payer) += val;
     }
     else {
-        debtor_map.insert({payer, -val});
+        debtor_map.insert({payer, val});
     }
 
     if (debtor_map.find(debtor) != debtor_map.end()) {
-        debtor_map.at(debtor) += val;
+        debtor_map.at(debtor) -= val;
     }
     else {
-        debtor_map.insert({debtor, val});
+        debtor_map.insert({debtor, -val});
     }
 }
 
@@ -40,13 +40,13 @@ void assign(DatabaseHelper &db) {
     // sort debt_vector in ascending order
     sort(debt_vector.begin(), debt_vector.end(), sort_by);
 
+#ifdef DEBUG
     for (auto &x : debt_vector) {
-        cout << x.first << ", " << x.second << endl;
+        ostringstream out;
+        out << x.first << ", " << x.second;
+        print_debug(out.str());
     }
-
-    cout << "head: " << head_ptr << endl;
-    cout << "tail: " << tail_ptr << endl;
-    cout << "transaction after simplification: " << endl;
+#endif
 
     while (head_ptr < tail_ptr) {
         double val1 = debt_vector[head_ptr].second;
@@ -94,6 +94,8 @@ int load_debts_callback(void *data, int argc, char **argv,
 }
 
 void load_debts(DatabaseHelper &db) {
+    std::unordered_map<string, double> new_debtor_map;
+    debtor_map = new_debtor_map;
     char *err_msg;
     const char *query = "SELECT Payer, Debtor, Amount "
                         "FROM Debts";
