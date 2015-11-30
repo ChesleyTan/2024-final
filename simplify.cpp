@@ -4,49 +4,49 @@ using namespace std;
 
 std::unordered_map<string, double> debtor_map;
 
+// add debt to debtor_map
 void simplify(string payer, string debtor, double val) {
     if (debtor_map.find(payer) != debtor_map.end()) {
         debtor_map.at(payer) -= val;
     }
     else {
-        debtor_map.insert( {payer, -val});
+        debtor_map.insert({payer, -val});
     }
 
     if (debtor_map.find(debtor) != debtor_map.end()) {
         debtor_map.at(debtor) += val;
     }
     else {
-        debtor_map.insert( {debtor, val});
+        debtor_map.insert({debtor, val});
     }
-
 }
 
 bool sort_by(const pair<string, double> &a, const pair<string, double> &b) {
     return a.second < b.second;
 }
 
-// distribute the debts between app users
+// distribute the debts between debtors
 void assign() {
     // sort map by value: make use of vector
     vector<pair<string, double>> debt_vector;
 
-    for (auto& x : debtor_map) {
+    for (auto &x : debtor_map) {
         debt_vector.push_back(make_pair(x.first, x.second));
     }
 
     int head_ptr = 0;
     int tail_ptr = (int) debt_vector.size() - 1;
 
-    // get sorted vector, ascending
+    // sort debt_vector in ascending order
     sort(debt_vector.begin(), debt_vector.end(), sort_by);
 
-    for (auto& x : debt_vector) {
+    for (auto &x : debt_vector) {
         cout << x.first << ", " << x.second << endl;
     }
 
     cout << "head: " << head_ptr << endl;
     cout << "tail: " << tail_ptr << endl;
-    cout << "transction after simplifying: " << endl;
+    cout << "transaction after simplification: " << endl;
 
     while (head_ptr < tail_ptr) {
         double val1 = debt_vector[head_ptr].second;
@@ -79,34 +79,35 @@ void assign() {
             // TODO: put data to the SQL
             cout << data->getPayerName() << " owes " << data->getDebtorName()
                     << " $" << data->getVal() << endl;
+            delete data;
         }
-        else { // the sum of all values should = 1
-            cerr << "App Crashes: " << endl;
+        else { // no more debts need to be resolved
+            return;
         }
     }
 }
 
 /*
- int main(int argc, const char * argv[]) {
- // read data from the table
- // TODO
+int main(int argc, const char * argv[]) {
+    // read data from the table
+    // TODO
 
- cout << " ------ test case from user ------ " << endl;
- simplify("A", "B", 5.0);
- simplify("B", "C", 10.0);
- simplify("C", "A", 3.0);
- simplify("C", "D", 8.0);
- simplify("C", "B", 2.0);
- simplify("E", "A", 5.0);
- simplify("B", "E", 2.0);
- simplify("A", "E", 1.0);
+    cout << " ------ test case from user ------ " << endl;
+    simplify("A", "B", 5.0);
+    simplify("B", "C", 10.0);
+    simplify("C", "A", 3.0);
+    simplify("C", "D", 8.0);
+    simplify("C", "B", 2.0);
+    simplify("E", "A", 5.0);
+    simplify("B", "E", 2.0);
+    simplify("A", "E", 1.0);
 
- for (auto& x: debtor_map) {
- cout << x.first << ", " << x.second << endl;
- }
- cout << " ------ " << endl;
- assign();
+    for (auto& x : debtor_map) {
+        cout << x.first << ", " << x.second << endl;
+    }
+    cout << " ------ " << endl;
+    assign();
 
- return 0;
- }
- */
+    return 0;
+}
+*/
