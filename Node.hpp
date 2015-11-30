@@ -10,6 +10,9 @@ class Node {
 public:
     // define the member functions
     Node(string, string, double);
+    string getPayerName();
+    string getDebtorName();
+    double getVal();
     
 private:
     // define the member variables
