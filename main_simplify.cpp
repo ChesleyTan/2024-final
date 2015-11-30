@@ -3,7 +3,8 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
-#include "Node.hpp"
+
+#include "Node.h"
 
 using std::string;
 using namespace std;
