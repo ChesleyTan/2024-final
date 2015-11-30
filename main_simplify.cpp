@@ -1,11 +1,8 @@
-//
-//  main.cpp
-//  Simplify
-
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
 #include "Node.hpp"
 
 using std::string;
