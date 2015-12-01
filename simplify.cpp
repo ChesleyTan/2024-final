@@ -52,7 +52,7 @@ void assign(DatabaseHelper &db) {
         double val1 = debt_vector[head_ptr].second;
         double val2 = debt_vector[tail_ptr].second;
         double new_debt = 0;
-        Node *data;
+        string payer, debtor;
         if (val1 == 0) {
             head_ptr++;
             continue;
@@ -64,21 +64,17 @@ void assign(DatabaseHelper &db) {
         if (val1 < 0 && val2 > 0) {
             if (-val1 > val2) {
                 new_debt = val2;
-                data = new Node(debt_vector[tail_ptr].first,
-                        debt_vector[head_ptr].first, new_debt);
-                tail_ptr--;
+                payer = debt_vector[tail_ptr--].first;
+                debtor = debt_vector[head_ptr].first;
                 debt_vector[head_ptr].second += val2;
             }
             else {
                 new_debt = -val1;
-                data = new Node(debt_vector[tail_ptr].first,
-                        debt_vector[head_ptr].first, new_debt);
-                head_ptr++;
+                payer = debt_vector[tail_ptr].first;
+                debtor = debt_vector[head_ptr++].first;
                 debt_vector[tail_ptr].second += val1;
             }
-            db.add_debt(data->getPayerName(), data->getDebtorName(),
-                    data->getVal());
-            delete data;
+            db.add_debt(payer, debtor, new_debt);
         }
         else { // no more debts need to be resolved
             return;
