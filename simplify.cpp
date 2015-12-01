@@ -21,10 +21,6 @@ void simplify(string payer, string debtor, double val) {
     }
 }
 
-bool sort_by(const pair<string, double> &a, const pair<string, double> &b) {
-    return a.second < b.second;
-}
-
 // distribute the debts between debtors
 void assign(DatabaseHelper &db) {
     // sort map by value: make use of vector
@@ -38,7 +34,10 @@ void assign(DatabaseHelper &db) {
     int tail_ptr = (int) debt_vector.size() - 1;
 
     // sort debt_vector in ascending order
-    sort(debt_vector.begin(), debt_vector.end(), sort_by);
+    sort(debt_vector.begin(), debt_vector.end(),
+            [](pair<string, double> &a, pair<string, double> &b) {
+                return a.second < b.second;
+            });
 
 #ifdef DEBUG
     for (auto &x : debt_vector) {
