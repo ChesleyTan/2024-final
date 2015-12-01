@@ -1,2 +1,2 @@
 # 2024-final
-Expense/Debt Tracker
+Expense/Debt Tracker with Consolidation/Simplification of Debts
